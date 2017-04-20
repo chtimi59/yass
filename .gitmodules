@@ -1,0 +1,3 @@
+[submodule "setup"]
+	path = setup
+	url = https://github.com/chtimi59/php-setup-pack.git

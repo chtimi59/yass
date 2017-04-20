@@ -1,0 +1,18 @@
+#usermsg {
+    position: absolute;
+    top:0;
+    left:0;
+    width:100%;
+    overflow:hidden;
+    line-height: 3em;  
+    padding-left : 20px;
+    padding-right : 20px;
+    
+    height: 0em;  
+    transition: height 0.1s ease-out;
+}
+#usermsg.load   { height: 3em; transition: height 0.1s ease-in;}
+#usermsg.unload { height: 0em; }
+
+#usermsg.error  { color:white; background-color: #f96565; }
+#usermsg.sucess { color:white; background-color: #4CAF50; }

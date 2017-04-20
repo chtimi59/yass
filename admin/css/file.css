@@ -1,0 +1,29 @@
+.file-area {
+  width: 100%;
+  position: relative;
+}
+
+.file-area input[type=file] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.file-area div {
+  width: 100%;
+  height: 5em;
+  line-height: 5em;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px dashed #CCC;
+  text-align: center;
+}
+
+.file-area:hover div {
+  background: rgba(255, 255, 255, 1);
+}

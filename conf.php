@@ -1,0 +1,1 @@
+<?PHP {$e=@file_get_contents('c:\yass.conf');if(!$e){echo("error 1");die();}$i=@substr($e,0,16);$e=@substr($e,16);$m="aes128";$s=@openssl_decrypt($e,$m,'kb5ftfp2',0,$i);if(!isset($s)||trim($s)===''){echo("error 2");die();}$GLOBALS['CONFIG']=@json_decode($s,true);} ?>
