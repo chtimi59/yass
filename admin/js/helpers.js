@@ -10,7 +10,7 @@ function toogleBroadcast(e, asset_id) {
     e.stopPropagation();    
 }
 
-function toggleVisibiltiy(id) {
+function toggleVisibility(id) {
     var e = document.getElementById(id).style;
     e.display = (e.display == 'none')?'block':'none';
 }
@@ -28,11 +28,12 @@ function onAssetFile(v,id) {
 
 function updateDisplayStatus(id) {    
    var xhttp = new XMLHttpRequest();
-   xhttp.open("GET", "../rest-api/displays.php", false);
+   xhttp.open("GET", "../display/api.php", false);
    xhttp.setRequestHeader("Content-type", "application/json");
    xhttp.send();
    var resp = JSON.parse(xhttp.responseText);   
-      
+   //console.log(resp);
+   
    var html = '';
    html += 'Server Time: '+resp['time']+'<br>';
    html += 'Displays:<br>';
@@ -51,10 +52,14 @@ function updateDisplayStatus(id) {
           strLastSee = ""+lastSee+"s";
       }
 	  
-      html += '<li>['+display_data['ip']+'] seen '+strLastSee+' ago</li>';
-	  html += '<ul>';
-      html += '<li> Sequence: '+display_data['assetId']+'</li>';
-	  html += '</ul>';
+      strSequence = ''
+      var curAssetId = display_data['assetId'];
+      for(j=0; j<resp['sequence'].length; j++) {
+         var assetId = resp['sequence'][j];
+         strSequence += '<div class=\'asset '+((assetId==curAssetId)?'on':'')+'\'>'+assetId+ '</div>';
+      }
+      
+      html += '<li>['+display_data['ip']+'] '+strSequence+' <span class=\'lastseen\'>(seen '+strLastSee+' ago)</span></li>';
    }
    html += '  </ul>'   
    html += '</li>'

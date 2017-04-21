@@ -100,13 +100,13 @@ updateScheduler();
 <div id="displayStatus">Connection...</div>
 <script>
 updateDisplayStatus('displayStatus');
-setInterval(function(){ updateDisplayStatus('displayStatus'); }, 5000);
+setInterval(function(){ updateDisplayStatus('displayStatus'); }, 500);
 </script>
 
 <!-- EDIT PANEL -->
 <?php
 if ($count != 0) {
-    echo "<a href='#' onclick=\"toggleVisibiltiy('formContainer'); return false;\">Edit Panel</a>\n";
+    echo "<a href='#' onclick=\"toggleVisibility('formContainer'); return false;\">Edit Panel</a>\n";
 }
 ?>
 <div id='formContainer' style='display:<?php echo ($ShowEditPanel?'box':'none'); ?>'>

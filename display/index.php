@@ -1,18 +1,33 @@
 <?php
 include('../defines.php');
+include('display.php');
+include('../scheduler.php');
+
 $errorCode = '';
 $errorMsg = '';
 $date = date('m/d/Y h:i:s a', time());
+$displayIp = getDisplayIp();
+$displayId = '';
+$assetUrl = '';
+
+$cookiesAreDisabled = false;
 
 do
-{
+{    
 	if(!@include("../conf.php")) {
+        $errorCode = 'a01';
 		$errorMsg = "Setup missing";
 		break;
 	}
-	
-	include('display.php');
-	include('../scheduler.php');
+    
+    /* 0. get Display id */
+    $displayId = getDisplayId();
+    if ($displayId == NULL) {
+        $cookiesAreDisabled = true;
+        $errorCode = 'a01';
+		$errorMsg = "Couldn't get/set an ID for this display (does cookies are desactivated ?)";
+		break;
+	}
 	
     /* 1. database connection */
     if ($GLOBALS['CONFIG']['sql_isPW']) {
@@ -20,43 +35,44 @@ do
     } else {
         $db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login']); 
     }        
-    if (!$db) { $errorCode=1; $errorMsg=mysql_error(); break; }
-    if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) { $errorCode=2; $errorMsg=mysql_error(); break; }
+    if (!$db) { $errorCode='b01'; $errorMsg=mysql_error(); break; }
+    if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) { $errorCode='b02'; $errorMsg=mysql_error(); break; }
     
 	/* 2. Update global scheduler */
     updateScheduler();
-	
-    /* 2. Client-Display IP */
-    $ip = getDisplayIp();
-        
+	        
     /* 3. update db with Client-Display */
-    $ret = updateDisplayHeartBit($ip);
-    if ($ret!=NULL) { $errorCode=3; $errorMsg=$ret; break; }
+    $ret = updateDisplayHeartBit($displayId);
+    if ($ret!=NULL) { $errorCode='c01'; $errorMsg=$ret; break; }
     
     /* 4- find next assetId */
-	$assetId = getNextAssetId(getDisplayAssetId($ip));
-    if ($assetId==NULL) { $errorCode=4; $errorMsg='Playlist is empty'; break; }        
+	$assetId = getNextAssetId(getDisplayAssetId($displayId));
+    if ($assetId==NULL) { $errorCode='d01'; $errorMsg='Playlist is empty'; break; }        
     
     /* 5- Apply */
-    setDisplayAssetId($ip, $assetId);        
+    setDisplayAssetId($displayId, $assetId);        
     $sql = "SELECT * FROM `".MYSQL_TABLE_ASSETS."` WHERE `id`=$assetId";
     $req = @mysql_query($sql);
-    if (!$req) { $errorCode=5; $errorMsg=mysql_error(); break; }
+    if (!$req) { $errorCode='e01'; $errorMsg=mysql_error(); break; }
     $row = mysql_fetch_assoc($req);
-    if (!$row) { $errorCode=6; $errorMsg='Playlist is empty'; break; }    
-    if (!isset($row['path']))  { $errorCode=7; $errorMsg='Bad db formating'; break; }
-    if (!isset($row['duration'])) { $errorCode=8; $errorMsg='Bad db formating'; break; }    
+    if (!$row) { $errorCode='e02'; $errorMsg='Playlist is empty'; break; }    
+    if (!isset($row['path']))  { $errorCode='e03'; $errorMsg='Bad db formating'; break; }
+    if (!isset($row['duration'])) { $errorCode='e04'; $errorMsg='Bad db formating'; break; }    
     $assetUrl = ASSET_URL_BASE.$row['path'].'/index.php?t='.$row['duration'];        
     
     /* 6- Actual redirection */
-    header('Location: '.$assetUrl);      
-    exit();    
+    if (!isset ($_GET['debug'])) {
+        header('Location: '.$assetUrl);      
+        exit();    
+    }
     break;
     
 } while(0);
 
 /* fail so auto-refresh (10s) */
-header("Refresh:10; url='index.php'", true, 303);
+if ((!$cookiesAreDisabled) && isset ($_GET['debug'])) {
+    header("Refresh:10; url='index.php'", true, 303);
+}
 ?>
 
 <html>
@@ -64,8 +80,16 @@ header("Refresh:10; url='index.php'", true, 303);
 <h1>
 <?php echo $date ?><br>
 </h1>
-Code: <?php echo $errorCode ?><br>
-<?php echo $errorMsg ?><br>
-
+<ul style="list-style-type: none;">
+<li>Ip address: <?php echo $displayIp ?></li>
+<li>Client UUID: <?php echo $displayId ?></li>
+<?php 
+if ($errorCode!='') {
+    echo "<li>&nbsp;</li>\n";
+    echo "<li>Error code: $errorCode</li>\n";
+    echo "<li>$errorMsg</li>\n";
+} ?>
+</ul>
+<?php if (isset ($_GET['debug'])) echo $assetUrl; ?>
 </body>
 </html>

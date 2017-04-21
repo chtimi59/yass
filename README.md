@@ -11,11 +11,13 @@ Yet-Another-SlideShow
 - First I want to make it very simple and free to use and share!
 - I want to have a versatile slideslow, so here slides are actually html pages
 
+# Limitation
+- There is no transition between slides
+- IE11/Edge doesn't work (something about cookies)
+
 # Usage
-
-Webpage which needs to be loaded by Display-Client is http://yourserver/display
-
-Admin page is here http://yourserver/admin
+- Webpage which needs to be loaded by Display-Client is http://yourserver/display
+- Admin page is here http://yourserver/admin
 
 # Principe
 
@@ -30,7 +32,8 @@ One with a list of assets (i.e slides) defined by:
 
 The other one contains one row per Display-Client (automatically added when a display made a connection)
 the fields  are:
-- ip [Primary key]
+- id (set by a cookie)
+- ip, for debug and try to identify a bit the display (don't work through proxy)
 - date, i.e. a kind of heartbit the see active displays]
 - current asset id showed by the display.
 
