@@ -1,15 +1,19 @@
 <?php
-include('..\conf.php');
-include('..\defines.php');
-
-include('display.php');
-
+include('../defines.php');
 $errorCode = '';
 $errorMsg = '';
 $date = date('m/d/Y h:i:s a', time());
 
 do
 {
+	if(!@include("../conf.php")) {
+		$errorMsg = "Setup missing";
+		break;
+	}
+	
+	include('display.php');
+	include('../scheduler.php');
+	
     /* 1. database connection */
     if ($GLOBALS['CONFIG']['sql_isPW']) {
         $db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login'], $GLOBALS['CONFIG']['sql_pw']); 
@@ -19,6 +23,9 @@ do
     if (!$db) { $errorCode=1; $errorMsg=mysql_error(); break; }
     if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) { $errorCode=2; $errorMsg=mysql_error(); break; }
     
+	/* 2. Update global scheduler */
+    updateScheduler();
+	
     /* 2. Client-Display IP */
     $ip = getDisplayIp();
         
@@ -27,11 +34,11 @@ do
     if ($ret!=NULL) { $errorCode=3; $errorMsg=$ret; break; }
     
     /* 4- find next assetId */
-    $assetId = getDisplayNextAssetId($ip);
+	$assetId = getNextAssetId(getDisplayAssetId($ip));
     if ($assetId==NULL) { $errorCode=4; $errorMsg='Playlist is empty'; break; }        
     
     /* 5- Apply */
-    setDisplayNextAssetId($assetId);        
+    setDisplayAssetId($ip, $assetId);        
     $sql = "SELECT * FROM `".MYSQL_TABLE_ASSETS."` WHERE `id`=$assetId";
     $req = @mysql_query($sql);
     if (!$req) { $errorCode=5; $errorMsg=mysql_error(); break; }
@@ -39,10 +46,10 @@ do
     if (!$row) { $errorCode=6; $errorMsg='Playlist is empty'; break; }    
     if (!isset($row['path']))  { $errorCode=7; $errorMsg='Bad db formating'; break; }
     if (!isset($row['duration'])) { $errorCode=8; $errorMsg='Bad db formating'; break; }    
-    $assetPath = 'ASSETS/'.$row['path'].'/index.php?t='.$row['duration'];        
+    $assetUrl = ASSET_URL_BASE.$row['path'].'/index.php?t='.$row['duration'];        
     
     /* 6- Actual redirection */
-    header('Location: '.$assetPath);      
+    header('Location: '.$assetUrl);      
     exit();    
     break;
     

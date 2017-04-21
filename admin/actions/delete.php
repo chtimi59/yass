@@ -12,7 +12,7 @@ function doDelete()
     $req = @mysql_query($sql) or sqldie($sql);  ;
     $row = @mysql_fetch_assoc($req);
     if ($row) {
-        deleteDir(ASSET_PATH.$row['assetId']); 
+        deleteDir(ASSET_DIR_BASE.$row['path']); 
     } else {
         $GLOBALS['USERMSG_TYPE'] = 'error';
         $GLOBALS['USERMSG_STR']  = 'Invalid id';

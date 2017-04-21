@@ -1,5 +1,9 @@
 <?php
-include('../common.php');
+include('../defines.php');
+if(!@include("../conf.php")) {
+	$errorMsg = "Setup missing";
+	break;
+}
 
 /* actions */
 define('ACTION_NONE',     0);
@@ -8,11 +12,16 @@ define('ACTION_DELETE',   2);
 define('ACTION_GET',      3);
 define('ACTION_MAKELIVE', 4);
 
+/* various helpers */
 include('actions/helpers.php');
+/* asset scheduler */
+include('../scheduler.php');
+/* actions on assets list */
 include('actions/update.php');
 include('actions/delete.php');
 include('actions/get.php');
 include('actions/live.php');
+
     
 /* default post/get values */
 if (!isset ($_GET['action']))     $_GET['action'] = ACTION_NONE;
@@ -28,9 +37,13 @@ $USERMSG_TYPE='sucess';
 $USERMSG_STR = "";
 
 /* database connection */
-$db = @mysql_connect(MYSQL_HOST, MYSQL_USER, MYSQL_PW); 
-if (!$db)  die('Could not connect: ' . mysql_error());
-if(!mysql_select_db(MYSQL_DB,$db)) die('Could not connect db: ' . mysql_error());
+if ($GLOBALS['CONFIG']['sql_isPW']) {
+	$db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login'], $GLOBALS['CONFIG']['sql_pw']); 
+} else {
+	$db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login']); 
+} 
+if (!$db) die('Could not connect: ' . mysql_error());
+if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) die('Could not connect db: ' . mysql_error());
 
 /* main action switch */
 $ShowEditPanel = false;
@@ -52,15 +65,15 @@ switch($_GET['action']) {
         break;
 }
 
-/* Take opportunity to update asset satus*/
-updateAssetsStatus();
-
 /* count nb of entry */
 $sql = 'SELECT COUNT(*) FROM `'.MYSQL_TABLE_ASSETS.'`';
 $req = @mysql_query($sql) or sqldie($sql);
 $row = mysql_fetch_assoc($req);
 $count = $row['COUNT(*)'];
 if (!$ShowEditPanel) $ShowEditPanel = ($count == 0);
+
+/* Update global scheduler */
+updateScheduler();
 ?>
 
 <html>
@@ -145,7 +158,7 @@ if ($count != 0)
     echo "<th onclick=\"location.href='index.php?sortBy=startDate&sortAsc=$newSortAsc'\">startDate</th>\n";        
     echo "<th onclick=\"location.href='index.php?sortBy=stopDate&sortAsc=$newSortAsc'\">stopDate</th>\n";        
     echo "<th onclick=\"location.href='index.php?sortBy=duration&sortAsc=$newSortAsc'\">duration</th>\n";        
-    echo "<th onclick=\"location.href='index.php?sortBy=assetId&sortAsc=$newSortAsc'\">assetId</th>\n";        
+    echo "<th onclick=\"location.href='index.php?sortBy=path&sortAsc=$newSortAsc'\">path</th>\n";        
     echo "<th onclick=\"location.href='index.php?sortBy=status&sortAsc=$newSortAsc'\">status</th>\n";        
     echo "<th></th>\n";    
     echo "</tr>\n";    
@@ -171,7 +184,7 @@ if ($count != 0)
         }
         echo "<td>";
         echo "<a href='index.php?action=".ACTION_DELETE."&id=".$row['id']."'>Delete</a>\n";   
-        echo "<a href='../assets/".$row['assetId']."/index.php?debug=1&t=".$row['duration']."'>Test</a>\n";
+        echo "<a href='".ASSET_URL_BASE.$row['path']."/index.php?debug=1&t=".$row['duration']."'>Test</a>\n";
         if ($row['status']==STATUS_BACKSTAGE) echo "<a href='index.php?action=".ACTION_MAKELIVE."&id=".$row['id']."'>Make Live</a>\n";
         echo "</td>\n";
         echo "</tr>\n";

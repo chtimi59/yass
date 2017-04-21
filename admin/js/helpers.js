@@ -33,16 +33,16 @@ function updateDisplayStatus(id) {
    xhttp.send();
    var resp = JSON.parse(xhttp.responseText);   
       
-   var html = '<ul>';
-   html += '<li>Server Time: '+resp['time']+'</li>';
-   html += '<li>Displayed asset: ['+resp['curId']+']</li>';
-   html += '<li>Next asset: ['+resp['nextId']+']</li>';
-   html += '<li>Displays:';   
+   var html = '';
+   html += 'Server Time: '+resp['time']+'<br>';
+   html += 'Displays:<br>';
    html += '  <ul>'
    for(i=0; i<resp['displays'].length; i++) {
-      lastSee = resp['displays'][i]['diff'];
+	  var display_data = resp['displays'][i];
+	  
+      lastSee = display_data['diff'];
       if (lastSee>86400) {
-          strLastSee = ""+Math.ceil(lastSee/86400)+" days";
+          break; /* more than 1 day : too old */
       } else if (lastSee>3600) {
           strLastSee = ""+Math.ceil(lastSee/3600)+" hours";
       } else if (lastSee>60) {
@@ -50,7 +50,11 @@ function updateDisplayStatus(id) {
       } else {
           strLastSee = ""+lastSee+"s";
       }
-      html += '<li>['+resp['displays'][i]['ip']+'] seen '+strLastSee+' ago</li>';    
+	  
+      html += '<li>['+display_data['ip']+'] seen '+strLastSee+' ago</li>';
+	  html += '<ul>';
+      html += '<li> Sequence: '+display_data['assetId']+'</li>';
+	  html += '</ul>';
    }
    html += '  </ul>'   
    html += '</li>'

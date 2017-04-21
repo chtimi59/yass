@@ -49,25 +49,7 @@ function getDisplayAssetId($ip)
     return $currentAssetID;
 }
 
-function getDisplayNextAssetId($ip)
-{
-    $currentAssetID = getDisplayAssetId($ip);
-    $sql = 'SELECT * FROM `'.MYSQL_TABLE_ASSETS.'` WHERE `status`='.STATUS_LIVE.' ORDER BY `id` ASC';
-    $req = @mysql_query($sql);
-    if (!$req) return NULL;
-    
-    $nextId = NULL;    
-    $tmpId = NULL;
-    while ($row = mysql_fetch_assoc($req)) {
-        $id = $row['id'];
-        if ($id==$currentAssetID) $nextId = $tmpId;
-        $tmpId = $id;
-    }
-    if ($nextId == NULL) $nextId=$tmpId;
-    return $nextId;
-}
-
-function setDisplayAssetId($id, $assetId) {
+function setDisplayAssetId($ip, $assetId) {
     $sql = "UPDATE `".MYSQL_TABLE_DISPLAY."` SET `assetId` = $assetId WHERE `ip`='$ip'";
     if (!@mysql_query($sql)) return mysql_error(); 
 }

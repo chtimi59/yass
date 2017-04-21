@@ -9,4 +9,7 @@ define('STATUS_BACKSTAGE', 0);
 define('STATUS_PENDING',   1);
 define('STATUS_LIVE',      2);
 define('STATUS_FINISHED',  3);
+
+define('ASSET_URL_BASE',  '../ASSETS/');
+define('ASSET_DIR_BASE',   dirname(__FILE__) . '/ASSETS/');
 ?>

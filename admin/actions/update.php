@@ -6,11 +6,11 @@ function doUpdate()
     $newToAddlAssetFile = $newToAddlAssetFile || $isNewEntry;
     
     /* 1- add asset file */
-    $assetId = guid();    
+    $assetPath = guid();    
     if ($newToAddlAssetFile)
     {   
         
-        $filePath = ASSET_PATH.$assetId;
+        $filePath = ASSET_DIR_BASE.$assetPath;
 
         if ((!isset($_FILES['assetFile'])) || $_FILES['assetFile']['size']==0){            
             $GLOBALS['USERMSG_TYPE'] = 'error';            
@@ -66,12 +66,12 @@ function doUpdate()
     /* 2- update db */    
     if ($isNewEntry) {
         /* 2a. it's a new insertion */
-        $req =  "INSERT INTO `".MYSQL_TABLE_ASSETS."` (`name`, `startDate`, `stopDate`, `duration`, `assetId`) VALUES (";    
+        $req =  "INSERT INTO `".MYSQL_TABLE_ASSETS."` (`name`, `startDate`, `stopDate`, `duration`, `path`) VALUES (";    
         $req .= ($_POST['name']==NULL)     ? 'NULL, ' : "'".$_POST['name']."', ";
         $req .= ($_POST['startDate']==NULL)? 'NULL, ' : "'".$_POST['startDate']."', ";
         $req .= ($_POST['stopDate']==NULL) ? 'NULL, ' : "'".$_POST['stopDate']."', ";
         $req .= ($_POST['duration']==NULL) ? 'NULL, ' : "'".$_POST['duration']."', ";
-        $req .= "'".$assetId."'";        
+        $req .= "'".$assetPath."'";        
         $req .= ")";
         @mysql_query($req) or sqldie($req);  
         
@@ -83,11 +83,11 @@ function doUpdate()
         $row = @mysql_fetch_assoc($req);
         if ($row) {
             if ($newToAddlAssetFile) {
-                // delete old asset file, to replace by the new $assetId.
-                deleteDir(ASSET_PATH.$row['assetId']); 
+                // delete old asset file, to replace by the new $assetPath.
+                deleteDir(ASSET_DIR_BASE.$row['path']); 
             } else {
-                // no $assetId specified, so read back the orginal one.
-                $assetId = $row['assetId'];
+                // no $assetPath specified, so read back the orginal one.
+                $assetPath = $row['path'];
             }
         } else {
             $GLOBALS['USERMSG_TYPE'] = 'error';
@@ -100,7 +100,7 @@ function doUpdate()
         if ($_POST['startDate']!=NULL) $req .= "`startDate` = '".$_POST['startDate']."',";
         if ($_POST['stopDate']!=NULL)  $req .= "`stopDate` = '".$_POST['stopDate']."',";
         if ($_POST['duration']!=NULL)  $req .= "`duration` = '".$_POST['duration']."',";
-        $req .= "`assetId` = '".$assetId."' ";
+        $req .= "`path` = '".$assetPath."' ";
         $req .= 'WHERE `id`='.$_POST['id'];
         @mysql_query($req) or sqldie($req);      
         
