@@ -1,8 +1,7 @@
 <?php
 include('../defines.php');
 if(!@include("../conf.php")) {
-	$errorMsg = "Setup missing";
-	break;
+	die("Setup missing");
 }
 
 /* actions */
