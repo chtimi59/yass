@@ -90,7 +90,7 @@ Note: for video, no duration (set to 0) is needed, and a *manual* js redirection
 window.location.href = 'http://yourserver/display';
 ```
 
-# Squeduling
+# Scheduling
 
 Nothing really complicate here, asset are read from the lastest inserted (throught the admin interface) to the oldest.
 
