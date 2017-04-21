@@ -2,33 +2,34 @@
 Yet-Another-SlideShow
 
 # Features
-- no installation needed (except the server), client should only display a webpage
-- supports multiples display client
-- full html5 slides (hence support image, videos, HTML5 animation, etc...)
+- no installation needed (except the server), clients should only display a webpage
+- supports multiples display's clients
+- full html5 slides (hence support images, videos, HTML5 animations, etc...)
 - admin interface:
 
 # Motivation
-- First I want to make it very simple and free to use and share !
-- I want to have a versatile slideslow, so here slide are actually html page
+- First I want to make it very simple and free to use and share!
+- I want to have a versatile slideslow, so here slides are actually html pages
 
 # Usage
 
-Page which needs to load by Display-Client: http://yourserver/display
+Webpage which needs to be loaded by Display-Client is http://yourserver/display
 
-Admin page: http://yourserver/admin
+Admin page is here http://yourserver/admin
 
 # Principe
 
-a database contains 2 tables
+First a database contains 2 tables as described below:
 
-one with a list of assets (i.e slide) defined by:
+One with a list of assets (i.e slides) defined by:
 - an id, name
-- an optional start and stop date for squeduling
+- an optional start and stop date for scheduling
 - an optional duration
-- a path to where the actual slide's HTML5 page is
+- a path to where the actual slide's HTML5 page is (page.html)
+- a status (backstage, pending, live or finished)
 
-a second one contains one row by display (automatically added when a display made a connection)
-the field are:
+The other one contains one row per Display-Client (automatically added when a display made a connection)
+the fields  are:
 - ip [Primary key]
 - date, i.e. a kind of heartbit the see active displays]
 - current asset id showed by the display.
@@ -67,6 +68,9 @@ define('STATUS_FINISHED',  3);
 
 
 # Sources
+```
+git submodule update --init
+```
 
 Arborescence tree:
 ```
