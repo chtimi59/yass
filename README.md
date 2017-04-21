@@ -1,14 +1,15 @@
 # yass
 Yet-Another-SlideShow
 
+![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin1.png)
+![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin2.png)
+
+
 # Features
 - no installation needed (except the server), clients should only display a webpage
 - supports multiples display's clients
 - full html5 slides (hence support images, videos, HTML5 animations, etc...)
-- admin interface:
-
-![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin1.png)
-![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin2.png)
+- admin interface
 
 # Motivation
 - First I want to make it very simple and free to use and share!
@@ -16,7 +17,7 @@ Yet-Another-SlideShow
 
 # Limitation
 - There is no transition between slides
-- IE11/Edge doesn't work see ['How does it works'](#how-does-it-works-?) for more details.
+- IE11/Edge doesn't work see ['How does it works'](#how-does-it-works) for more details.
 
 # Assets-type
 - jpeg - for static image
@@ -34,13 +35,15 @@ Note: for html5 page, the main one should be nammed 'page.html'
 - Webpage which needs to be loaded by Display-Client is http://yourserver/display
 - Admin page is here http://yourserver/admin
 
-# How does it works ?
+# How does it works
+
+![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/schema.png)
 
 A database with 2 tables is defined:
 - assets table
 - displays table
 
-**Assets table** defines a list of assets (or 'slides') as follow:
+1-**Assets table** defines a list of assets (or 'slides') as follow:
 - an id
 - an optionnal asset name, for convenience.
 - an optional start and stop date for ['scheduling'](#scheduling)
@@ -48,7 +51,7 @@ A database with 2 tables is defined:
 - a path to where the actual slide's HTML5 page is (page.html)
 - a status (i.e. 'backstage', 'pending', 'live' or 'finished')
 
-**Displays table** contains one row per Display (or client)
+1- **Displays table** contains one row per Display (or client)
 Entries in this table are automatically added when new connections occurs.
 
 We actually use a cookie (with an expiration date of 10 Years) to dinstiguish, if this connection is new or not.
@@ -73,9 +76,7 @@ header("Refresh: timeInSec; url='http://yourserver/display', true, 303)
 
 That implied, whatever occurs in the HTML page, clients will be redirected-back to http://yourserver/display after **timeInSec** seconds.
 
-And this close the loop to be able to get a sequential process of HTML's slide:
-
-![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/schema.png)
+And this close the loop to be able to get a sequential process of HTML's slide.
 
 Actually is important to notice that 'Refresh' is a Proprietary/non-standard HTTP header. However in 2017 more of less all browsers (Firefox, Chrome) supports it (it's a Netscape Legacy).
 
@@ -93,7 +94,7 @@ window.location.href = 'http://yourserver/display';
 
 Nothing really complicate here, asset are read from the lastest inserted (throught the admin interface) to the oldest.
 
-Only asset with 'LIVE' status used.
+Only asset with 'LIVE' status are used.
 
 ```
 define('STATUS_BACKSTAGE', 0);
@@ -128,4 +129,6 @@ load : http://yourserver/setup and follow this instruction
 
 # client setup
 
-None! Simply load http://yourserver/display and the show should run.
+None!
+
+Simply load http://yourserver/display and the show should run.
