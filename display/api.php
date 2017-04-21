@@ -2,6 +2,18 @@
 include('../defines.php');
 include('display.php');
 include('../scheduler.php');
+switch ($_SERVER['REQUEST_METHOD'])
+{
+    case 'GET':
+        break; 
+    case 'DELETE':
+    case 'PUT':
+    case 'POST':
+    default:
+        header("HTTP/1.0 400 Bad Request");
+        echo json_encode($arr);
+        exit();
+}
 
 $errorCode = '';
 $errorMsg = '';

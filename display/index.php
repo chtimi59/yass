@@ -1,4 +1,8 @@
 <?php
+session_start();
+
+//unset($_SESSION['clientUUID']);
+    
 include('../defines.php');
 include('display.php');
 include('../scheduler.php');
@@ -12,6 +16,7 @@ $assetUrl = '';
 
 $cookiesAreDisabled = false;
 
+    
 do
 {    
 	if(!@include("../conf.php")) {

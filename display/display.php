@@ -5,8 +5,20 @@
 */
 function getDisplayId()
 {
-    $cookie_name = 'clientUUID';    
-    if(isset($_COOKIE[$cookie_name])) {
+    $cookie_name = 'clientUUID';  
+    
+    /* is this display already have an ID ? */
+    if(!isset($_COOKIE[$cookie_name]))
+    {
+        /* no! */
+        
+        /* Have we already try to affect him an ID before ? */
+        if (isset($_SESSION[$cookie_name])) {
+           /* yes! so cookies doesn't work here... */
+           return NULL;  
+        } 
+            
+        /* Create a new ID */
         if (function_exists('com_create_guid')){
             $uuid = trim(com_create_guid(), '{}');
         }else{
@@ -19,7 +31,12 @@ function getDisplayId()
                     .substr($charid,16, 4).$hyphen
                     .substr($charid,20,12);
         }
-        setcookie($cookie_name, $uuid, time() + (10 * 365 * 24 * 60 * 60), '/');
+        
+        /* Affect it to him */
+        $_SESSION[$cookie_name] = $uuid;
+        setcookie($cookie_name, $uuid, time() + (10 * 365 * 24 * 60 * 60));
+        header('Location: index.php'); //need to reload to apply the cookie;
+        exit();
     }
     
     $uuid = NULL;

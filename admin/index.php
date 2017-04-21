@@ -120,7 +120,7 @@ if ($count != 0) {
         <div id='file-dummy'>Please select an asset file</div>
     </div>
     
-    <label for="name">Name <i>(optional)</i>:</label>
+    <label for="name">Name <i>(for convenience)</i>:</label>
     <input type="text"   name="name"      value="<?php echo $_POST['name'];?>" autofocus/>    
     
     <label for="startDate">Start Date:</label>

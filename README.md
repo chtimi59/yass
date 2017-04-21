@@ -7,63 +7,93 @@ Yet-Another-SlideShow
 - full html5 slides (hence support images, videos, HTML5 animations, etc...)
 - admin interface:
 
+![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin1.png)
+![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin2.png)
+
 # Motivation
 - First I want to make it very simple and free to use and share!
 - I want to have a versatile slideslow, so here slides are actually html pages
 
 # Limitation
 - There is no transition between slides
-- IE11/Edge doesn't work (something about cookies)
+- IE11/Edge doesn't work see ['How does it works'](#how-does-it-works-?) for more details.
+
+# Assets-type
+- jpeg - for static image
+- mp4  - for video
+- zip  - for html5 page
+
+...and potentially much more, as far as full HTML5 is supported !
+
+see ['docs\html5-clock.zip'](https://raw.githubusercontent.com/chtimi59/yass/master/docs/html5-clock.zip) to get an idea of what is achievable easily.
+
+Note: for html5 page, the main one should be nammed 'page.html'
+
 
 # Usage
 - Webpage which needs to be loaded by Display-Client is http://yourserver/display
 - Admin page is here http://yourserver/admin
 
-# Principe
+# How does it works ?
 
-First a database contains 2 tables as described below:
+A database with 2 tables is defined:
+- assets table
+- displays table
 
-One with a list of assets (i.e slides) defined by:
-- an id, name
-- an optional start and stop date for scheduling
+**Assets table** defines a list of assets (or 'slides') as follow:
+- an id
+- an optionnal asset name, for convenience.
+- an optional start and stop date for ['scheduling'](#scheduling)
 - an optional duration
 - a path to where the actual slide's HTML5 page is (page.html)
-- a status (backstage, pending, live or finished)
+- a status (i.e. 'backstage', 'pending', 'live' or 'finished')
 
-The other one contains one row per Display-Client (automatically added when a display made a connection)
-the fields  are:
-- id (set by a cookie)
-- ip, for debug and try to identify a bit the display (don't work through proxy)
-- date, i.e. a kind of heartbit the see active displays]
+**Displays table** contains one row per Display (or client)
+Entries in this table are automatically added when new connections occurs.
+
+We actually use a cookie (with an expiration date of 10 Years) to dinstiguish, if this connection is new or not.
+
+The fields  are:
+- id, set by a cookie
+- ip address, mainly for debug/status (note: this don't work if displays are behing a proxy)
+- date, i.e. a kind of heartbit the see active displays
 - current asset id showed by the display.
 
 From there it's quite easy,
 
-when clients (display) load http://yourserver/display they are actually redirected on the next asset HTML5 page:
+when clients/displays loads http://yourserver/display they are actually redirected on the next asset HTML5 page, by a pure HTTP/1.1 redirection as follow:
 ```
 header('Location: '.$assetPath);     
 ```
 
-HTML5 pages are actually wrapped by the following HTTP header:
+from there HTML5 pages are actually wrapped by the following HTTP header:
 ```
 header("Refresh: timeInSec; url='http://yourserver/display', true, 303)
 ```
 
-That implied, whatever occurs in the HTML page, client will be redirected (back) to http://yourserver/display after **timeInSec** seconds.
+That implied, whatever occurs in the HTML page, clients will be redirected-back to http://yourserver/display after **timeInSec** seconds.
 
-And that's it, that's all!
+And this close the loop to be able to get a sequential process of HTML's slide:
 
-**Playing with HTTP redirection do the trick!**
+![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/schema.png)
+
+Actually is important to notice that 'Refresh' is a Proprietary/non-standard HTTP header. However in 2017 more of less all browsers (Firefox, Chrome) supports it (it's a Netscape Legacy).
+
+some refences about HTTP redirection here:
+- ['Wiki URL redirect'](https://en.wikipedia.org/wiki/URL_redirection#Refresh_Meta_tag_and_HTTP_refresh_header)
+- ['Wiki Http Header'](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
+
 
 Note: for video, no duration (set to 0) is needed, and a *manual* js redirection is done by the HTML page itselft when the video is finished
 ```
 window.location.href = 'http://yourserver/display';
 ```
 
-
-
 # Squeduling
 
+Nothing really complicate here, asset are read from the lastest inserted (throught the admin interface) to the oldest.
+
+Only asset with 'LIVE' status used.
 
 ```
 define('STATUS_BACKSTAGE', 0);
@@ -72,18 +102,25 @@ define('STATUS_LIVE',      2);
 define('STATUS_FINISHED',  3);
 ```
 
+- BACKSTAGE means, that admin should validate it to make it live
+- PENDING/FINISHED are related to asset startDate and endDate if defined
 
 # Sources
+
+This repo use submodule, so don't forget:
+
 ```
 git submodule update --init
 ```
 
 Arborescence tree:
 ```
-\admin - admin page
-\display - display page (should be load by display's client)
-```
+\admin   - admin page
+\display - display page (which should be load by display's client)
+\setup   - used only once for the page setup
 
+\docs    - various docs an sample
+```
 
 # server setup
 
