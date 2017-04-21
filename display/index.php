@@ -1,7 +1,5 @@
 <?php
 session_start();
-
-//unset($_SESSION['clientUUID']);
     
 include('../defines.php');
 include('display.php');
@@ -13,10 +11,7 @@ $date = date('m/d/Y h:i:s a', time());
 $displayIp = getDisplayIp();
 $displayId = '';
 $assetUrl = '';
-
-$cookiesAreDisabled = false;
-
-    
+   
 do
 {    
 	if(!@include("../conf.php")) {
@@ -28,7 +23,6 @@ do
     /* 0. get Display id */
     $displayId = getDisplayId();
     if ($displayId == NULL) {
-        $cookiesAreDisabled = true;
         $errorCode = 'a01';
 		$errorMsg = "Couldn't get/set an ID for this display (does cookies are desactivated ?)";
 		break;
@@ -75,9 +69,8 @@ do
 } while(0);
 
 /* fail so auto-refresh (10s) */
-if ((!$cookiesAreDisabled) && isset ($_GET['debug'])) {
-    header("Refresh:10; url='index.php'", true, 303);
-}
+header("Refresh:10; url='index.php'", true, 303);
+
 ?>
 
 <html>
