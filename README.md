@@ -41,23 +41,26 @@ when clients (display) load http://yourserver/display they are actually redirect
 header('Location: '.$assetPath);     
 ```
 
-Then before HTML5 page little wrapper, include the following header:
+HTML5 pages are actually wrapped by the following HTTP header:
 ```
 header("Refresh: timeInSec; url='http://yourserver/display', true, 303)
 ```
 
-This implied, whatever occurs in the HTML page, client will be redirected to http://yourserver/display after **timeInSec** second.
-
-Note: for video for instance, no duration is need so a *manual* js redirection is done when the video is finished
-```
-window.location.href = 'http://yourserver/display';
-```
+That implied, whatever occurs in the HTML page, client will be redirected (back) to http://yourserver/display after **timeInSec** seconds.
 
 And that's it, that's all!
 
 **Playing with HTTP redirection do the trick!**
 
-# Find new asset
+Note: for video, no duration (set to 0) is needed, and a *manual* js redirection is done by the HTML page itselft when the video is finished
+```
+window.location.href = 'http://yourserver/display';
+```
+
+
+
+# Squeduling
+
 
 ```
 define('STATUS_BACKSTAGE', 0);
