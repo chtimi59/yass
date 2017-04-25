@@ -1,8 +1,6 @@
 <?php
+if(!@include("../conf.php")) { echo("Setup missing"); die(); }
 include('../defines.php');
-if(!@include("../conf.php")) {
-	die("Setup missing");
-}
 
 /* actions */
 define('ACTION_NONE',     0);
