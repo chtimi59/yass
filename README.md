@@ -173,3 +173,6 @@ on Windows
 update.bat
 ```
 
+## Troubleshooting
+
+See our [FAQ](https://github.com/chtimi59/yass/blob/master/docs/faq.md)

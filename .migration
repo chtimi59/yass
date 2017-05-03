@@ -1,0 +1,34 @@
+<?php
+if (!isset($argv[1])) { echo 'invalid version'; exit(1); }
+if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', $argv[1], $PRE_VER)) { echo 'invalid version'; exit(1); }
+if (!file_exists ("VERSION")) { echo 'missing VERSION file'; exit(1); }
+if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', file_get_contents("VERSION"), $CUR_VER)) { echo 'bad VERSION file'; exit(1); }
+if(!@include("conf.php")) { exit(0); }
+include('defines.php');
+if ($GLOBALS['CONFIG']['sql_isPW']) {
+	$db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login'], $GLOBALS['CONFIG']['sql_pw']); 
+} else {
+	$db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login']); 
+}
+if (!$db) { echo 'Could not connect: ' . mysql_error(); exit(1); }
+if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) { echo 'Could not connect db: ' . mysql_error(); exit(1); }
+$FROM=$PRE_VER[1].'.'.$PRE_VER[2].'.'.$PRE_VER[3];
+$TO=$CUR_VER[1].'.'.$CUR_VER[2].'.'.$CUR_VER[3];
+if ($TO == $FROM) { exit(0); }
+// --------------------
+
+
+/*if ("1.0.0" == $FROM) {
+    print("Migrating from [$FROM]\n");    
+    $FROM="1.1.0";
+}*/
+
+// --------------------
+if ($TO == $FROM) {
+   echo "Done";
+   exit(0);
+} else {
+   echo "MigrationError"; 
+   exit(1);
+}
+?>
