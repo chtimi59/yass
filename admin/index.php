@@ -114,7 +114,9 @@ if ($count != 0) {
 
     <label for="assetFile">Asset file <i>(Zipped HTML page, JPEG or MPEG4 file)</i>:</label>
     <div class="file-area">
-        <input type="file" name="assetFile" onchange="onAssetFile(this.value,'file-dummy')" />
+        <input type="file" name="assetFile"
+              onchange="onAssetFile(this.value,'file-dummy'); changeFormValue(basename(this.value),'form','name');"
+         />
         <div id='file-dummy'>Please select an asset file</div>
     </div>
     

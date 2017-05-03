@@ -26,6 +26,15 @@ function onAssetFile(v,id) {
     }            
 }
 
+function basename(path) {
+   return path.split(/[\\/]/).pop(); 
+}
+
+function changeFormValue(v,formId,fieldName) {
+    var e = document.querySelector("form[id='"+formId+"'] input[name='"+fieldName+"']");
+    e.value = v;
+}
+
 function updateDisplayStatus(id) {    
    var xhttp = new XMLHttpRequest();
    xhttp.open("GET", "../display/api.php", false);
