@@ -6,6 +6,7 @@ git reset --hard
 #pull for update
 git pull
 git submodule update --init
+chmod a+x update.sh
 
 #delete setup ?
 read -p "Do you want to keep setup folder? [Y]es [N]o " yn

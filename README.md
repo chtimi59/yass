@@ -1,19 +1,18 @@
 # yass
-Yet-Another-SlideShow, an open source solution for digital signage 
+Yet-Another-SlideShow, an open source digital signage solution
 
 ![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin1.png)
 ![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin2.png)
 
 
 # Features
-- full versatile html5 slides (hence support images, videos, HTML5 animations, etc...)
-- admin interface
-- really simple to use: just drag'n drop your medias in the admin interface
 - no installation needed (except the server), clients should only display a webpage
 - supports multiples display's clients
+- full html5 slides (hence support images, videos, HTML5 animations, etc...)
+- admin interface
 
 # Motivation
-- I want to make it very simple and free to use and share!
+- First I want to make it very simple and free to use and share!
 - I want to have a versatile slideslow, so here slides are actually html pages
 
 # Limitation
@@ -31,11 +30,12 @@ see ['docs\html5-clock.zip'](https://raw.githubusercontent.com/chtimi59/yass/mas
 
 Note: for html5 page, the main one should be nammed 'page.html'
 
-# Usage
-- Admin's page is here http://yourserver/admin
-- Display's page is http://yourserver/display
 
-# How does it works ?
+# Usage
+- Webpage which needs to be loaded by Display-Client is http://yourserver/display
+- Admin page is here http://yourserver/admin
+
+# How does it works
 
 ![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/schema.png)
 
@@ -46,17 +46,17 @@ A database with 2 tables is defined:
 1-**Assets table** defines a list of assets (or 'slides') as follow:
 - an id
 - an optionnal asset name, for convenience.
-- an optional start and stop date for ['scheduling'](#scheduling) if you want to do a timeboxed campaign
+- an optional start and stop date for ['scheduling'](#scheduling)
 - an optional duration
 - a path to where the actual slide's HTML5 page is (page.html)
 - a status (i.e. 'backstage', 'pending', 'live' or 'finished')
 
-2- **Displays table** contains one row per Display (or client)
+1- **Displays table** contains one row per Display (or client)
 Entries in this table are automatically added when new connections occurs.
 
 We actually use a cookie (with an expiration date of 10 Years) to dinstiguish, if this connection is new or not.
 
-The fields are:
+The fields  are:
 - id, set by a cookie
 - ip address, mainly for debug/status (note: this don't work if displays are behing a proxy)
 - date, i.e. a kind of heartbit the see active displays
@@ -74,18 +74,18 @@ from there HTML5 pages are actually wrapped by the following HTTP header:
 header("Refresh: timeInSec; url='http://yourserver/display', true, 303)
 ```
 
-That implied, whatever occurs in the HTML page (even bugs ;)), clients will be redirected-back to http://yourserver/display after **timeInSec** seconds.
+That implied, whatever occurs in the HTML page, clients will be redirected-back to http://yourserver/display after **timeInSec** seconds.
 
-And this close the loop to be able to get a sequential process of HTML slides.
+And this close the loop to be able to get a sequential process of HTML's slide.
 
-Actually it's important to notice that 'Refresh' is a Proprietary/non-standard HTTP header. However in 2017 more of less all browsers (Firefox, Chrome) supports it (it's a Netscape Legacy).
+Actually is important to notice that 'Refresh' is a Proprietary/non-standard HTTP header. However in 2017 more of less all browsers (Firefox, Chrome) supports it (it's a Netscape Legacy).
 
 some refences about HTTP redirection here:
 - ['Wiki URL redirect'](https://en.wikipedia.org/wiki/URL_redirection#Refresh_Meta_tag_and_HTTP_refresh_header)
 - ['Wiki Http Header'](https://en.wikipedia.org/wiki/List_of_HTTP_header_fields)
 
 
-Note: for video, no duration (i.e. field set to 0) is needed, and a *manual* redirection is done by the HTML page itselft when the video is finished:
+Note: for video, no duration (set to 0) is needed, and a *manual* js redirection is done by the HTML page itselft when the video is finished
 ```
 window.location.href = 'http://yourserver/display';
 ```
@@ -127,7 +127,7 @@ Arborescence tree:
 
 ## Prequists
 - git
-- php5 with *mcrypt* extension
+- php5 with mcrypt extension
 - mysql
 
 Note: you may also have to update your upload filesize setting
@@ -142,20 +142,17 @@ example in *nginx.conf*:
 client_max_body_size 100M;
 ```
 
-see the following note about [Nginx Prequists](https://github.com/chtimi59/yass/blob/master/docs/nginx.md)
 
 ## Installation
 
-In your 'www/' folder, clone this repo with:
+In your `www` folder
 ```
-git clone --recursive https://github.com/chtimi59/yass.git
+sudo git clone --recursive https://github.com/chtimi59/yass.git
 ```
 then go to [http://yourserver/yass/setup/](http://yourserver/yass/setup/) and follows the instructions,
 the process should end with the following prompt:
 
-```
 **Warning** The setup should ends with **" Congratulation! "**
-```
 
 At this point you should now have:
 
@@ -166,11 +163,11 @@ At this point you should now have:
 
 on Unix
 ```
-./update.sh
+sudo ./update.sh
 ```
 on Windows
 ```
-./update.bat
+update.bat
 ```
 
 
