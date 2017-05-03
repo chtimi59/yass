@@ -82,7 +82,12 @@ updateScheduler();
 <link rel="stylesheet" href="css/usermsg.css">
 <link rel="stylesheet" href="css/display_status.css">
 <script src="js/helpers.js"></script>
-<body>
+<body 
+    ondragenter="startDragFile(); setVisibility('formContainer', true);";
+    ondragover="return stopEvent(event, getFormElt('form','assetFile'))";
+    ondragleave="stopDragFile();";
+    ondrop="onDrop(); return stopEvent(event, getFormElt('form','assetFile'))";
+>
 
 <!-- ERROR MSG -->
 <?php if (!empty($USERMSG_STR)) {
@@ -115,7 +120,10 @@ if ($count != 0) {
     <label for="assetFile">Asset file <i>(Zipped HTML page, JPEG or MPEG4 file)</i>:</label>
     <div class="file-area">
         <input type="file" name="assetFile"
-              onchange="onAssetFile(this.value,'file-dummy'); changeFormValue(basename(this.value),'form','name');"
+              onchange="onAssetFileChange(this.value,'file-dummy'); getFormElt('form','name').value = basename(this.value);"
+              ondragenter="onAssetFileDragEnter('file-dummy');"
+              ondragleave="onAssetFileDragLeave('file-dummy');"
+              ondrop="onAssetFileDragLeave('file-dummy');"
          />
         <div id='file-dummy'>Please select an asset file</div>
     </div>

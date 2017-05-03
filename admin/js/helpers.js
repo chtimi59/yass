@@ -10,29 +10,76 @@ function toogleBroadcast(e, asset_id) {
     e.stopPropagation();    
 }
 
+function setVisibility(id, visibility) {
+    var e = document.getElementById(id).style;
+    e.display = (visibility)?'block':'none';
+}
+
 function toggleVisibility(id) {
     var e = document.getElementById(id).style;
     e.display = (e.display == 'none')?'block':'none';
 }
 
-function onAssetFile(v,id) {           
+function stopEvent(e, filterOutElt) {
+    if(filterOutElt == e.target) { return true; }
+    if(e.preventDefault) { e.preventDefault(); }
+    if(e.stopPropagation) { e.stopPropagation(); }
+    return false;
+}
+
+var dragInOutCount = 0;
+function startDragFile() {
+    var e = document.getElementsByTagName("BODY")[0];
+    e.style.backgroundColor='#b6d0be';
+    var e = document.getElementById('file-dummy');
+    e.style.backgroundColor='#b6d0be';
+    dragInOutCount++;
+}
+
+function stopDragFile() {
+    dragInOutCount--;
+    if (dragInOutCount!=0) return;
+    var e = document.getElementsByTagName("BODY")[0];
+    e.style.backgroundColor='';
+    var e = document.getElementById('file-dummy');
+    e.style.background='';
+}
+
+function onDrop() {
+    console.log('drop');
+    dragInOutCount=1;
+    stopDragFile();        
+}
+
+function onAssetFileChange(v,id) {           
     var e = document.getElementById(id);
     if (v=='') {
         e.innerHTML = 'Please select an asset file';
-        e.style.background='';
     } else {
         e.innerHTML = v;
-        e.style.background='rgba(200, 255, 200, 0.4)';
     }            
+}
+
+function onAssetFileDragEnter(id) {    
+    console.log('enter');       
+    var e = document.getElementById(id);
+    e.style.borderWidth='5px'; 
+    e.style.borderColor='#FF0'; 
+}
+
+function onAssetFileDragLeave(id) {           
+    console.log('leave');
+    var e = document.getElementById(id);
+    e.style.borderWidth=''; 
+    e.style.borderColor=''; 
 }
 
 function basename(path) {
    return path.split(/[\\/]/).pop(); 
 }
 
-function changeFormValue(v,formId,fieldName) {
-    var e = document.querySelector("form[id='"+formId+"'] input[name='"+fieldName+"']");
-    e.value = v;
+function getFormElt(formId,fieldName) {
+   return document.querySelector("form[id='"+formId+"'] input[name='"+fieldName+"']");
 }
 
 function updateDisplayStatus(id) {    

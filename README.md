@@ -1,5 +1,5 @@
 # yass
-Yet-Another-SlideShow
+Yet-Another-SlideShow, an open source digital signage solution
 
 ![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin1.png)
 ![alt tag](https://raw.githubusercontent.com/chtimi59/yass/master/docs/admin2.png)
@@ -123,12 +123,51 @@ Arborescence tree:
 \docs    - various docs an sample
 ```
 
-# server setup
+# Setup
 
-load : http://yourserver/setup and follow this instruction
+## Prequists
+- git
+- php5 with mcrypt extension
+- mysql
 
-# client setup
+Note: you may also have to update your upload filesize setting
 
-None!
+example in *php.ini*:
+```
+post_max_size = 100M
+upload_max_filesize = 100M
+```
+example in *nginx.conf*:
+```
+client_max_body_size 100M;
+```
 
-Simply load http://yourserver/display and the show should run.
+
+## Installation
+
+In your `www` folder
+```
+git clone --recursive https://github.com/chtimi59/yass.git
+```
+then go to [http://yourserver/yass/setup/](http://yourserver/yass/setup/) and follows the instructions,
+the process should end with the following prompt:
+
+**Warning** The setup should ends with **" Congratulation! "**
+
+At this point you should now have:
+
+- [http://yourserver/yass/admin/](http://yourserver/yass/admin/) Admin Interface
+- [http://yourserver/yass/](http://yourserver/yass/) page to be load by displays
+
+## Yass update
+
+on Unix
+```
+./update.sh
+```
+on Windows
+```
+./update.bat
+```
+
+
