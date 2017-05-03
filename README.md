@@ -148,7 +148,7 @@ see the following note about [Nginx Prequists](https://github.com/chtimi59/yass/
 
 In your 'www/' folder, clone this repo with:
 ```
-sudo git clone --recursive https://github.com/chtimi59/yass.git
+sudo git clone --recursive --branch release https://github.com/chtimi59/yass.git
 ```
 then go to [http://yourserver/yass/setup/](http://yourserver/yass/setup/) and follows the instructions,
 the process should end with the following prompt:
