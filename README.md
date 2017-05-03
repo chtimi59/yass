@@ -142,6 +142,7 @@ example in *nginx.conf*:
 client_max_body_size 100M;
 ```
 
+see the following note about [Nginx Prequists](https://github.com/chtimi59/yass/blob/master/docs/nginx.md)
 
 ## Installation
 
