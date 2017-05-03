@@ -1,6 +1,9 @@
 <?php
 if(!@include("../conf.php")) { echo("Setup missing"); die(); }
 include('../defines.php');
+if (!file_exists ("../VERSION")) { echo 'missing VERSION file'; die(); }
+if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', file_get_contents("../VERSION"), $VER_ARR)) { echo 'bad VERSION file'; exit(1); }
+$VERSION=$VER_ARR[1].'.'.$VER_ARR[2].'.'.$VER_ARR[3].' (build '.$VER_ARR[4].')';
 
 /* actions */
 define('ACTION_NONE',     0);
@@ -100,6 +103,7 @@ updateScheduler();
 ?>
 
 <h1>Admin Page</h1>
+<?php echo "version: $VERSION<br>\n" ?>
 <div id="displayStatus">Connection...</div>
 <script>
 updateDisplayStatus('displayStatus');

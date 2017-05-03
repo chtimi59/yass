@@ -10,7 +10,6 @@ if %0 == "%~0" ( set EXPLORERCALL=1 )
 if not exist "VERSION" call :error_prompt "VERSION file is missing" && exit /b 1
 set /p ver=<"VERSION"
 echo Yass current version: %ver%
-goto :migration
 
 :: reset changes
 git reset --hard
@@ -30,7 +29,6 @@ if /I "%yn%" NEQ "y" (
    del setup.conf
 )
 
-:migration
 php .migration %ver%
 if %errorlevel% neq 0 call :error_prompt && exit /b 1
 echo.
