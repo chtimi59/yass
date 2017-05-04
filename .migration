@@ -1,8 +1,18 @@
 <?php
-if (!isset($argv[1])) { echo 'invalid version'; exit(1); }
-if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', $argv[1], $PRE_VER)) { echo 'invalid version'; exit(1); }
-if (!file_exists ("VERSION")) { echo 'missing VERSION file'; exit(1); }
-if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', file_get_contents("VERSION"), $CUR_VER)) { echo 'bad VERSION file'; exit(1); }
+function dieMsg($msg) {
+    print($msg."\n");
+    exit(1);
+}
+function sqldie($sql) {
+    print($sql."\n");
+    print(mysql_error());
+    exit(1);
+}
+
+if (!isset($argv[1])) {dieMsg('invalid version');}
+if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', $argv[1], $PRE_VER)) {dieMsg('invalid version');}
+if (!file_exists ("VERSION")) {dieMsg('missing VERSION file');}
+if (!preg_match('/^([0-9]+)\.([0-9]+)\.([0-9]+)\.(.+)$/', file_get_contents("VERSION"), $CUR_VER)) {dieMsg('bad VERSION file');}
 if(!@include("conf.php")) { exit(0); }
 include('defines.php');
 if ($GLOBALS['CONFIG']['sql_isPW']) {
@@ -10,25 +20,45 @@ if ($GLOBALS['CONFIG']['sql_isPW']) {
 } else {
 	$db = @mysql_connect($GLOBALS['CONFIG']['sql_host'], $GLOBALS['CONFIG']['sql_login']); 
 }
-if (!$db) { echo 'Could not connect: ' . mysql_error(); exit(1); }
-if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) { echo 'Could not connect db: ' . mysql_error(); exit(1); }
+if (!$db) {dieMsg('Could not connect: '.mysql_error());}
+if(!mysql_select_db($GLOBALS['CONFIG']['sql_db'],$db)) {dieMsg('Could not connect db: '.mysql_error());}
 $FROM=$PRE_VER[1].'.'.$PRE_VER[2].'.'.$PRE_VER[3];
 $TO=$CUR_VER[1].'.'.$CUR_VER[2].'.'.$CUR_VER[3];
-if ($TO == $FROM) { exit(0); }
 // --------------------
 
 
-/*if ("1.0.0" == $FROM) {
-    print("Migrating from [$FROM]\n");    
+if ("1.0.0" == $FROM) {
+    print("Migrating From [$FROM]\n"); 
+
+    /* Create asset group table */
+    $req =  "CREATE TABLE IF NOT EXISTS `".MYSQL_TABLE_ASSETS_GROUPS."` (";    
+    $req .= "  `id` varchar(255) NOT NULL, ";
+    $req .= "  `name` varchar(255) NOT NULL, ";
+    $req .= "   PRIMARY KEY (`id`)";
+    $req .= ") ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+    @mysql_query($req) or sqldie($req);  
+
+    /* Add positionKey and groupId to asset */
+    $req =  "ALTER TABLE `".MYSQL_TABLE_ASSETS."` ";    
+    $req .= "  ADD `positionKey` VARCHAR(255) NULL DEFAULT NULL AFTER `id`, ";
+    $req .= "  ADD `groupId` VARCHAR(255) NULL DEFAULT NULL AFTER `positionKey`";
+    @mysql_query($req) or sqldie($req);  
+    
+    /* Add name and grouplist to display */
+    $req =  "ALTER TABLE `".MYSQL_TABLE_DISPLAY."` ";    
+    $req .= "  ADD `name` VARCHAR(255) NULL DEFAULT NULL AFTER `id`, ";
+    $req .= "  ADD `grouplist` VARCHAR(255) NULL DEFAULT NULL AFTER `name`";
+    @mysql_query($req) or sqldie($req);  
+    
     $FROM="1.0.1";
-}*/
+}
 
 // --------------------
 if ($TO == $FROM) {
-   echo "Done";
+   print("Migration Done [$FROM]\n"); 
    exit(0);
 } else {
-   echo "MigrationError"; 
+   print("Migration Error\n"); 
    exit(1);
 }
 ?>

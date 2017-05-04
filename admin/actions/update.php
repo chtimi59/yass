@@ -66,11 +66,12 @@ function doUpdate()
     /* 2- update db */    
     if ($isNewEntry) {
         /* 2a. it's a new insertion */
-        $req =  "INSERT INTO `".MYSQL_TABLE_ASSETS."` (`name`, `startDate`, `stopDate`, `duration`, `path`) VALUES (";    
-        $req .= ($_POST['name']==NULL)     ? 'NULL, ' : "'".$_POST['name']."', ";
-        $req .= ($_POST['startDate']==NULL)? 'NULL, ' : "'".$_POST['startDate']."', ";
-        $req .= ($_POST['stopDate']==NULL) ? 'NULL, ' : "'".$_POST['stopDate']."', ";
-        $req .= ($_POST['duration']==NULL) ? 'NULL, ' : "'".$_POST['duration']."', ";
+        $req =  "INSERT INTO `".MYSQL_TABLE_ASSETS."` (`name`, `positionKey`, `startDate`, `stopDate`, `duration`, `path`) VALUES (";    
+        $req .= ($_POST['name']==NULL)        ? 'NULL, ' : "'".$_POST['name']."', ";
+        $req .= ($_POST['positionKey']==NULL) ? 'NULL, ' : "'".$_POST['positionKey']."', ";
+        $req .= ($_POST['startDate']==NULL)   ? 'NULL, ' : "'".$_POST['startDate']."', ";
+        $req .= ($_POST['stopDate']==NULL)    ? 'NULL, ' : "'".$_POST['stopDate']."', ";
+        $req .= ($_POST['duration']==NULL)    ? 'NULL, ' : "'".$_POST['duration']."', ";
         $req .= "'".$assetPath."'";        
         $req .= ")";
         @mysql_query($req) or sqldie($req);  
@@ -96,10 +97,11 @@ function doUpdate()
         }
         
         $req = "UPDATE `".MYSQL_TABLE_ASSETS."` SET ";            
-        if ($_POST['name']!=NULL)      $req .= "`name` = '".$_POST['name']."',";
-        if ($_POST['startDate']!=NULL) $req .= "`startDate` = '".$_POST['startDate']."',";
-        if ($_POST['stopDate']!=NULL)  $req .= "`stopDate` = '".$_POST['stopDate']."',";
-        if ($_POST['duration']!=NULL)  $req .= "`duration` = '".$_POST['duration']."',";
+        if ($_POST['name']!=NULL)        $req .= "`name` = '".$_POST['name']."',";
+        if ($_POST['positionKey']!=NULL) $req .= "`positionKey` = '".$_POST['positionKey']."',";
+        if ($_POST['startDate']!=NULL)   $req .= "`startDate` = '".$_POST['startDate']."',";
+        if ($_POST['stopDate']!=NULL)    $req .= "`stopDate` = '".$_POST['stopDate']."',";
+        if ($_POST['duration']!=NULL)    $req .= "`duration` = '".$_POST['duration']."',";
         $req .= "`path` = '".$assetPath."' ";
         $req .= 'WHERE `id`='.$_POST['id'];
         @mysql_query($req) or sqldie($req);      
@@ -108,6 +110,7 @@ function doUpdate()
     
     $_POST['id'] = NULL;
     $_POST['name'] = NULL;
+    $_POST['positionKey'] = NULL;
     $_POST['startDate'] = date("Y-m-d");
     $_POST['stopDate'] = NULL;
     $_POST['duration'] = 10;

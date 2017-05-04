@@ -24,13 +24,14 @@ include('actions/live.php');
 
     
 /* default post/get values */
-if (!isset ($_GET['action']))     $_GET['action'] = ACTION_NONE;
-if (!isset ($_GET['id']))         $_GET['id'] = NULL;
-if (!isset ($_POST['id']))        $_POST['id'] = NULL;
-if (!isset ($_POST['name']))      $_POST['name'] = NULL;
-if (!isset ($_POST['startDate'])) $_POST['startDate'] = date("Y-m-d");
-if (!isset ($_POST['stopDate']))  $_POST['stopDate'] = NULL;
-if (!isset ($_POST['duration']))  $_POST['duration'] = 10;
+if (!isset ($_GET['action']))        $_GET['action'] = ACTION_NONE;
+if (!isset ($_GET['id']))            $_GET['id'] = NULL;
+if (!isset ($_POST['id']))           $_POST['id'] = NULL;
+if (!isset ($_POST['name']))         $_POST['name'] = NULL;
+if (!isset ($_POST['positionKey']))  $_POST['positionKey'] = NULL;
+if (!isset ($_POST['startDate']))    $_POST['startDate'] = date("Y-m-d");
+if (!isset ($_POST['stopDate']))     $_POST['stopDate'] = NULL;
+if (!isset ($_POST['duration']))     $_POST['duration'] = 10;
 
 /* general user error message */
 $USERMSG_TYPE='sucess';
@@ -133,7 +134,10 @@ if ($count != 0) {
     </div>
     
     <label for="name">Name <i>(for convenience)</i>:</label>
-    <input type="text"   name="name"      value="<?php echo $_POST['name'];?>" autofocus/>    
+    <input type="text"   name="name"       value="<?php echo $_POST['name'];?>" autofocus/>    
+
+    <label for="positionKey">Position Key <i>(slides are alphabetical ordered)</i>:</label>
+    <input type="text"   name="positionKey" value="<?php echo $_POST['positionKey'];?>" autofocus/>  
     
     <label for="startDate">Start Date:</label>
     <input type="date"   name="startDate" value="<?php echo $_POST['startDate'];?>" />    
@@ -154,8 +158,8 @@ if ($count != 0) {
 if ($count != 0)
 {
     /* by default sort by id */
-    $sortBy = 'id';
-    $sortAsc = 0;     
+    $sortBy = 'positionKey';
+    $sortAsc = 1;     
     if (isset ($_GET['sortBy'])) $sortBy = $_GET['sortBy'];
     if (isset ($_GET['sortAsc'])) $sortAsc = $_GET['sortAsc'];
     $newSortAsc = ($sortAsc)?0:1;
@@ -163,10 +167,12 @@ if ($count != 0)
     echo "<table>\n";
 
     /* table header */
-    echo "<tr>\n";
-    echo "<th onclick=\"location.href='index.php?sortBy=id&sortAsc=$newSortAsc'\">id</th>\n";        
+    echo "<tr>\n";     
+    echo "<th></th>\n";
+    echo "<th onclick=\"location.href='index.php?sortBy=positionKey&sortAsc=$newSortAsc'\">positionKey</th>\n"; 
+    echo "<th onclick=\"location.href='index.php?sortBy=groupId&sortAsc=$newSortAsc'\">group</th>\n"; 
     echo "<th onclick=\"location.href='index.php?sortBy=name&sortAsc=$newSortAsc'\">name</th>\n";        
-    echo "<th onclick=\"location.href='index.php?sortBy=startDate&sortAsc=$newSortAsc'\">startDate</th>\n";        
+    echo "<th onclick=\"location.href='index.php?sortBy=startDate&sortAsc=$newSortAsc'\">startDate</th>\n";     
     echo "<th onclick=\"location.href='index.php?sortBy=stopDate&sortAsc=$newSortAsc'\">stopDate</th>\n";        
     echo "<th onclick=\"location.href='index.php?sortBy=duration&sortAsc=$newSortAsc'\">duration</th>\n";        
     echo "<th onclick=\"location.href='index.php?sortBy=path&sortAsc=$newSortAsc'\">path</th>\n";        
@@ -180,18 +186,32 @@ if ($count != 0)
     while ($row = mysql_fetch_assoc($req)) { 
         echo "<tr onclick=\"location.href='index.php?action=".ACTION_GET."&id=".$row['id']."';\">\n";    
         foreach ($row as $key => $value) {
-            echo "<td>";
-            if ($key=='status') {
-                switch($value) {
-                    case STATUS_PENDING:   echo "<span style='color:blue'>pending</span>"; break;
-                    case STATUS_LIVE: echo "<span style='color:red'>LIVE</span>"; break;
-                    case STATUS_FINISHED:  echo "*finished*"; break;
-                    default: echo ""; break;
-                }
-            }else {
-                echo $value;
+            switch($key)
+            {
+                case 'id':
+                    echo "<td class='id'>$value</td>";
+                    break;
+                    
+                case 'groupId':
+                    echo "<td>";
+                    if ($value==NULL) echo "default";
+                    echo "</td>";
+                    break;
+                    
+                case 'status':
+                    echo "<td>";
+                    switch($value) {                        
+                        case STATUS_PENDING:   echo "<span style='color:blue'>pending</span>"; break;
+                        case STATUS_LIVE: echo "<span style='color:red'>LIVE</span>"; break;
+                        case STATUS_FINISHED:  echo "*finished*"; break;
+                        default: echo ""; break;
+                    }
+                    echo "</td>";
+                    break;
+                
+                default:
+                    echo "<td>$value</td>";
             }
-            echo "</td>\n";
         }
         echo "<td>";
         echo "<a href='index.php?action=".ACTION_DELETE."&id=".$row['id']."'>Delete</a>\n";   
