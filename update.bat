@@ -14,6 +14,9 @@ echo Yass current version: %ver%
 :: reset changes
 git reset --hard
 if %errorlevel% neq 0 call :error_prompt && exit /b 1
+:: back to latest
+git checkout release
+if %errorlevel% neq 0 call :error_prompt && exit /b 1
 :: pull for update
 git pull
 if %errorlevel% neq 0 call :error_prompt && exit /b 1

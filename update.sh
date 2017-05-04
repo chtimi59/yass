@@ -2,20 +2,23 @@
 set -e
 pushd $(dirname "$0") > /dev/null
 
-#get current version
+# get current version
 [ ! -f  "VERSION" ] && echo "VERSION file is missing" && exit 1
 ver=`cat VERSION`
 echo Yass current version: $ver
     
-#reset changes
+# reset changes
 git reset --hard
 
-#pull for update
+# back to latest
+git checkout release
+
+# pull for update
 git pull
 git submodule update --init
 chmod a+x update.sh
 
-#delete setup ?
+# delete setup ?
 read -p "Do you want to keep setup folder? [Y]es [N]o " yn
 if [[ ! $yn =~ ^[Yy]$ ]]
 then
@@ -28,7 +31,7 @@ fi
 # migration
 php .migration $ver
 
-#get current version
+# get current version
 [ ! -f  "VERSION" ] && echo "VERSION file is missing" && exit 1
 ver=`cat VERSION`
 echo Yass new current version: $ver
