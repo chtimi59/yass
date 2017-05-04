@@ -2,7 +2,9 @@
 date_default_timezone_set('America/Montreal');
 
 define('MYSQL_TABLE_ASSETS', "assets");
+define('MYSQL_TABLE_ASSETS_GROUPS',"assets-groups");
 define('MYSQL_TABLE_DISPLAY',"displays");
+
 
 /* Asset Status */
 define('STATUS_BACKSTAGE', 0);

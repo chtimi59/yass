@@ -2,7 +2,7 @@
 function getNextAssetId($assetId)
 {
 	$nextAssetId = NULL;
-    $sql = 'SELECT * FROM `'.MYSQL_TABLE_ASSETS.'` WHERE `status`='.STATUS_LIVE.' ORDER BY `id` ASC';
+    $sql = 'SELECT * FROM `'.MYSQL_TABLE_ASSETS.'` WHERE `status`='.STATUS_LIVE.' ORDER BY `positionKey` DESC';
     $req = @mysql_query($sql);
     if (!$req) return $nextAssetId;
     
