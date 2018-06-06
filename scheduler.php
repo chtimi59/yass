@@ -1,18 +1,30 @@
 <?php
 function getNextAssetId($assetId)
 {
-	$nextAssetId = NULL;
-    $sql = 'SELECT * FROM `'.MYSQL_TABLE_ASSETS.'` WHERE `status`='.STATUS_LIVE.' ORDER BY `positionKey` DESC';
+    $rows = [];
+    $sql = 'SELECT * FROM `'.MYSQL_TABLE_ASSETS.'` WHERE `status`='.STATUS_LIVE.' ORDER BY `priorityKey`, `positionKey` ASC';
     $req = @mysql_query($sql);
-    if (!$req) return $nextAssetId;
+    if (!$req) return NULL;    
+    while ($row = mysql_fetch_assoc($req)) array_push($rows, $row);
+    $count = count($rows);
+    if ($count == 0) return NULL;
     
-    $tmpId = NULL;
-    while ($row = mysql_fetch_assoc($req)) {
-        if ($row['id']==$assetId) $nextAssetId = $tmpId;
-        $tmpId = $row['id'];
+    $rowsIds = (array_column($rows, 'id'));
+    $currentIdx = array_search($assetId, $rowsIds);    
+
+    $higherPriority = $rows[$count-1]['priorityKey'];    
+    $idx = ($currentIdx + 1) % $count;
+    $remaining = $count;
+    while($remaining > 0)
+    {
+        if ($higherPriority == $rows[$idx]['priorityKey']){
+          return $rows[$idx]['id'];      
+        } 
+        $remaining--;
+        $idx = ($idx+1) % $count;    
     }
-    if ($nextAssetId == NULL) $nextAssetId=$tmpId;
-    return $nextAssetId;
+
+    return NULL;
 }
 
 function updateScheduler() {    

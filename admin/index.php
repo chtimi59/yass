@@ -28,6 +28,7 @@ if (!isset ($_GET['action']))        $_GET['action'] = ACTION_NONE;
 if (!isset ($_GET['id']))            $_GET['id'] = NULL;
 if (!isset ($_POST['id']))           $_POST['id'] = NULL;
 if (!isset ($_POST['name']))         $_POST['name'] = NULL;
+if (!isset ($_POST['priorityKey']))  $_POST['priorityKey'] = NULL;
 if (!isset ($_POST['positionKey']))  $_POST['positionKey'] = NULL;
 if (!isset ($_POST['startDate']))    $_POST['startDate'] = date('Y-m-d\TH:i:s', strtotime(date('Y-m-d')));
 if (!isset ($_POST['stopDate']))     $_POST['stopDate'] = NULL;
@@ -135,9 +136,9 @@ if ($count != 0) {
     
     <label for="name">Name <i>(for convenience)</i>:</label>
     <input type="text"   name="name"       value="<?php echo $_POST['name'];?>" autofocus/>    
-
+    
     <label for="positionKey">Position Key <i>(slides are alphabetical ordered)</i>:</label>
-    <input type="text"   name="positionKey" value="<?php echo $_POST['positionKey'];?>" autofocus/>  
+    <input type="text"   name="positionKey" value="<?php echo $_POST['positionKey'];?>" />  
     
     <label for="startDate">Start Date:</label>
     <input type="datetime-local"   name="startDate" value="<?php echo $_POST['startDate'];?>" />
@@ -147,6 +148,9 @@ if ($count != 0) {
     
     <label for="duration">Duration in second: <i>(0 = no automatic end)</i></label>
     <input type="number" name="duration"  value="<?php echo $_POST['duration'];?>" />
+
+    <label for="priorityKey">Advanced-option: Priority<i>(slides are alphabetical ordered)</i>:</label>
+    <input type="text"   name="priorityKey" value="<?php echo $_POST['priorityKey'];?>" />  
     
     <input type="submit" value="Submit">
 
@@ -169,6 +173,7 @@ if ($count != 0)
     /* table header */
     echo "<tr>\n";     
     echo "<th></th>\n";
+    echo "<th onclick=\"location.href='index.php?sortBy=priorityKey&sortAsc=$newSortAsc'\">priorityKey</th>\n"; 
     echo "<th onclick=\"location.href='index.php?sortBy=positionKey&sortAsc=$newSortAsc'\">positionKey</th>\n"; 
     echo "<th onclick=\"location.href='index.php?sortBy=groupId&sortAsc=$newSortAsc'\">group</th>\n"; 
     echo "<th onclick=\"location.href='index.php?sortBy=name&sortAsc=$newSortAsc'\">name</th>\n";        

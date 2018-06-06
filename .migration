@@ -53,6 +53,20 @@ if ("1.0.0" == $FROM) {
     $FROM="1.0.1";
 }
 
+if ("1.0.1" == $FROM) {
+    print("Migrating From [$FROM]\n"); 
+
+    $req =  "ALTER TABLE `".MYSQL_TABLE_ASSETS."` ";    
+    /* Start/Stop dates Becomes date+time */
+    $req .= "  CHANGE `startDate` `startDate` DATETIME NULL DEFAULT NULL, ";
+    $req .= "  CHANGE `stopDate` `stopDate` DATETIME NULL DEFAULT NULL, ";
+    /* Add a priority key */
+    $req .= "  ADD `priorityKey` VARCHAR(255) NULL DEFAULT NULL AFTER `id`";
+    @mysql_query($req) or sqldie($req);  
+    
+    $FROM="1.0.2";
+}
+
 // --------------------
 if ($TO == $FROM) {
    print("Migration Done [$FROM]\n"); 

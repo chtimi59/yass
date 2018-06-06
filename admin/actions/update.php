@@ -62,12 +62,18 @@ function doUpdate()
                 return false;
         }
     }
-
+    
+    if ($_POST['priorityKey']!=NULL) $_POST['priorityKey'] = trim($_POST['priorityKey']);
+    if ($_POST['priorityKey']=="") $_POST['priorityKey'] = NULL;
+    if ($_POST['positionKey']!= NULL) $_POST['positionKey'] = trim($_POST['positionKey']);
+    if ($_POST['positionKey']=="") $_POST['positionKey'] = NULL;
+        
     /* 2- update db */    
     if ($isNewEntry) {
         /* 2a. it's a new insertion */
-        $req =  "INSERT INTO `".MYSQL_TABLE_ASSETS."` (`name`, `positionKey`, `startDate`, `stopDate`, `duration`, `path`) VALUES (";    
+        $req =  "INSERT INTO `".MYSQL_TABLE_ASSETS."` (`name`, `priorityKey`, `positionKey`, `startDate`, `stopDate`, `duration`, `path`) VALUES (";    
         $req .= ($_POST['name']==NULL)        ? 'NULL, ' : "'".$_POST['name']."', ";
+        $req .= ($_POST['priorityKey']==NULL) ? 'NULL, ' : "'".$_POST['priorityKey']."', ";
         $req .= ($_POST['positionKey']==NULL) ? 'NULL, ' : "'".$_POST['positionKey']."', ";
         $req .= ($_POST['startDate']==NULL)   ? 'NULL, ' : "'".$_POST['startDate']."', ";
         $req .= ($_POST['stopDate']==NULL)    ? 'NULL, ' : "'".$_POST['stopDate']."', ";
@@ -97,15 +103,39 @@ function doUpdate()
         }
         
         $req = "UPDATE `".MYSQL_TABLE_ASSETS."` SET ";            
-        if ($_POST['name']!=NULL)        $req .= "`name` = '".$_POST['name']."',";
-        if ($_POST['positionKey']!=NULL) $req .= "`positionKey` = '".$_POST['positionKey']."',";
-        if ($_POST['startDate']!=NULL)   $req .= "`startDate` = '".$_POST['startDate']."',";
+        
+        if ($_POST['name']!=NULL) {
+            $req .= "`name` = '".$_POST['name']."',";
+        }        
+        
+        if ($_POST['priorityKey']!=NULL) {
+            $req .= "`priorityKey` = '".$_POST['priorityKey']."',";
+        } else {
+            $req .= "`priorityKey` = NULL,";
+        }
+        
+        if ($_POST['positionKey']!=NULL) {
+            $req .= "`positionKey` = '".$_POST['positionKey']."',";
+        } else {
+            $req .= "`positionKey` = NULL,";
+        }
+        
+        if ($_POST['startDate']!=NULL) {
+            $req .= "`startDate` = '".$_POST['startDate']."',";
+        } else {
+            $req .= "`startDate` = NULL,";
+        }
+        
         if ($_POST['stopDate']!=NULL) {
             $req .= "`stopDate` = '".$_POST['stopDate']."',";
         } else {
             $req .= "`stopDate` = NULL,";
         }
-        if ($_POST['duration']!=NULL)    $req .= "`duration` = '".$_POST['duration']."',";
+        
+        if ($_POST['duration']!=NULL) {
+            $req .= "`duration` = '".$_POST['duration']."',";
+        }
+        
         $req .= "`path` = '".$assetPath."' ";
         $req .= 'WHERE `id`='.$_POST['id'];
         @mysql_query($req) or sqldie($req);      
@@ -114,6 +144,7 @@ function doUpdate()
     
     $_POST['id'] = NULL;
     $_POST['name'] = NULL;
+    $_POST['priorityKey'] = NULL;
     $_POST['positionKey'] = NULL;
     $_POST['startDate'] = date('Y-m-d\TH:i:s', strtotime(date('Y-m-d')));
     $_POST['stopDate'] = NULL;
