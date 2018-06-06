@@ -28,9 +28,9 @@ function updateAssetStatus($row, $exitBackStage=false)
     if (!$row) return false;
     
     $status       = $row['status'];
-    $startDate    = $row['startDate'];
-    $stopDate     = $row['stopDate']; 
-    $current_date = date("Y-m-d");    
+    $startDate    = strtotime($row['startDate']);
+    $stopDate     = strtotime($row['stopDate']); 
+    $current_date = strtotime("now");
     
     /* compute new status value */
     $newStatus = $status;
@@ -43,18 +43,16 @@ function updateAssetStatus($row, $exitBackStage=false)
         }
         
         /* NULL means startDate is not revelant */
-        if ($startDate!=NULL) {
-           // current_date < startDate ? 
-           if (strcmp($current_date, $startDate) < 0) {
+        if ($startDate != false) {
+           if ($startDate >= $current_date) {
                $newStatus = STATUS_PENDING;
                break;
            }
         }
         
         /* NULL means there is no stopDate */
-        if ($stopDate!=NULL) {
-           // stopDate < current_date ? 
-           if (strcmp($stopDate, $current_date) < 0) {
+        if ($stopDate != false) {
+           if ($current_date >= $stopDate) {
                $newStatus = STATUS_FINISHED;
                break;
            }

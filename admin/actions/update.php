@@ -100,7 +100,11 @@ function doUpdate()
         if ($_POST['name']!=NULL)        $req .= "`name` = '".$_POST['name']."',";
         if ($_POST['positionKey']!=NULL) $req .= "`positionKey` = '".$_POST['positionKey']."',";
         if ($_POST['startDate']!=NULL)   $req .= "`startDate` = '".$_POST['startDate']."',";
-        if ($_POST['stopDate']!=NULL)    $req .= "`stopDate` = '".$_POST['stopDate']."',";
+        if ($_POST['stopDate']!=NULL) {
+            $req .= "`stopDate` = '".$_POST['stopDate']."',";
+        } else {
+            $req .= "`stopDate` = NULL,";
+        }
         if ($_POST['duration']!=NULL)    $req .= "`duration` = '".$_POST['duration']."',";
         $req .= "`path` = '".$assetPath."' ";
         $req .= 'WHERE `id`='.$_POST['id'];
@@ -111,7 +115,7 @@ function doUpdate()
     $_POST['id'] = NULL;
     $_POST['name'] = NULL;
     $_POST['positionKey'] = NULL;
-    $_POST['startDate'] = date("Y-m-d");
+    $_POST['startDate'] = date('Y-m-d\TH:i:s', strtotime(date('Y-m-d')));
     $_POST['stopDate'] = NULL;
     $_POST['duration'] = 10;
     return true;

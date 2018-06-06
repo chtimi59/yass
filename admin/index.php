@@ -29,7 +29,7 @@ if (!isset ($_GET['id']))            $_GET['id'] = NULL;
 if (!isset ($_POST['id']))           $_POST['id'] = NULL;
 if (!isset ($_POST['name']))         $_POST['name'] = NULL;
 if (!isset ($_POST['positionKey']))  $_POST['positionKey'] = NULL;
-if (!isset ($_POST['startDate']))    $_POST['startDate'] = date("Y-m-d");
+if (!isset ($_POST['startDate']))    $_POST['startDate'] = date('Y-m-d\TH:i:s', strtotime(date('Y-m-d')));
 if (!isset ($_POST['stopDate']))     $_POST['stopDate'] = NULL;
 if (!isset ($_POST['duration']))     $_POST['duration'] = 10;
 
@@ -140,10 +140,10 @@ if ($count != 0) {
     <input type="text"   name="positionKey" value="<?php echo $_POST['positionKey'];?>" autofocus/>  
     
     <label for="startDate">Start Date:</label>
-    <input type="date"   name="startDate" value="<?php echo $_POST['startDate'];?>" />    
+    <input type="datetime-local"   name="startDate" value="<?php echo $_POST['startDate'];?>" />
     
     <label for="stopDate">Stop Date: <i>(not defined=infinite)</i></label>
-    <input type="date"   name="stopDate"  value="<?php echo $_POST['stopDate'];?>" />
+    <input type="datetime-local"   name="stopDate"  value="<?php echo $_POST['stopDate'];?>" />
     
     <label for="duration">Duration in second: <i>(0 = no automatic end)</i></label>
     <input type="number" name="duration"  value="<?php echo $_POST['duration'];?>" />

@@ -12,6 +12,8 @@ function doGet()
     $req = @mysql_query($sql) or sqldie($sql);  ;
     $row = @mysql_fetch_assoc($req);
     if ($row) {
+        if ($row['startDate'] != null) $row['startDate'] = Date('Y-m-d\TH:i:s', strtotime($row['startDate']));
+        if ($row['stopDate'] != null) $row['stopDate'] = Date('Y-m-d\TH:i:s', strtotime($row['stopDate']));
         $_POST = $row;
     } else {
         $GLOBALS['USERMSG_TYPE'] = 'error';
